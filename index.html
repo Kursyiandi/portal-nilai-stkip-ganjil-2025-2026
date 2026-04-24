@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Nilai Mahasiswa — STKIP Ahlussunnah</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a5c3a;
+    --green-light: #2d8a58;
+    --green-pale: #e8f5ee;
+    --gold: #c9a84c;
+    --gold-light: #f0d98a;
+    --cream: #fdf8f0;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --border: #d4e8da;
+    --white: #ffffff;
+    --red: #dc2626;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    color: var(--dark);
+  }
+
+  /* HEADER WEB */
+  header {
+    background: var(--green);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 30px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .logo-web {
+    width: 60px;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  }
+  .header-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 4vw, 26px);
+    color: var(--white);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  .header-text p {
+    color: var(--gold-light);
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  /* SEARCH & CARDS */
+  .semester-bar {
+    background: var(--gold);
+    padding: 8px 24px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+  .search-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 32px rgba(26,92,58,0.08);
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+  }
+  .input-group { 
+    display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px; align-items: flex-end; 
+  }
+  
+  .input-item { 
+    display: flex; flex-direction: column; flex: 1; min-width: 200px; text-align: left; 
+  }
+  
+  .input-item label { 
+    font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 8px; margin-left: 4px; 
+  }
+  
+  .input-item input {
+    width: 100%; padding: 14px;
+    border: 2px solid var(--border); border-radius: 12px;
+    background: var(--cream); outline: none; font-family: 'DM Sans', sans-serif;
+  }
+  
+  .input-item input[type="date"] { 
+    color: var(--dark); cursor: pointer; 
+  }
+
+  .btn-wrap { 
+    flex: 0 1 auto; min-width: 150px;
+  }
+
+  .btn-cari {
+    width: 100%; height: 50px; padding: 0 28px; background: var(--green); color: var(--white);
+    border: none; border-radius: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+
+  /* STATUS */
+  .status-msg {
+    margin-top: 16px; padding: 12px 16px; border-radius: 10px; font-size: 14px; display: none;
+  }
+  .status-msg.error { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; display: block; }
+  .status-msg.loading { background: var(--green-pale); color: var(--green); border: 1px solid var(--border); display: block; }
+
+  /* PROFILE & SUMMARY */
+  #result { display: none; }
+  .profile-card {
+    background: var(--white); border-radius: 20px; padding: 25px;
+    border: 1px solid var(--border); margin-bottom: 25px;
+    display: flex; gap: 20px; align-items: center;
+  }
+  .profile-avatar {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--green-pale); border: 2px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; color: var(--green); font-size: 24px;
+  }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+  .summary-item {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 15px; padding: 20px; text-align: center;
+  }
+  .summary-item .val { font-size: 28px; font-weight: bold; color: var(--green); }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--white); border-radius: 20px; border: 1px solid var(--border);
+    overflow-x: auto; margin-bottom: 30px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: var(--green); color: var(--white); padding: 12px; text-align: center; font-size: 11px; }
+  tbody td { padding: 12px; border-bottom: 1px solid var(--green-pale); }
+  .center { text-align: center; }
+  .badge-nilai { padding: 4px 12px; border-radius: 15px; font-weight: bold; font-size: 12px; }
+  .badge-A { background: #dcfce7; color: #15803d; }
+  .badge-B { background: #dbeafe; color: #1d4ed8; }
+  .badge-C { background: #fef08a; color: #854d0e; }
+  .badge-default { background: #f3f4f6; color: #374151; }
+
+  .btn-print {
+    padding: 10px 20px; background: var(--gold); color: var(--green);
+    border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 20px;
+  }
+
+  /* CSS PRINT (FORMAT KHS PDF) */
+  #print-area { display: none; }
+  /* KETERANGAN NILAI DIPROSES */
+  .note-nilai-proses {
+    font-size: 13px;
+    color: #b45309; 
+    background: #fef3c7; 
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: -15px; 
+    margin-bottom: 30px;
+    border-left: 4px solid #f59e0b;
+  }
+  @media print {
+    header, .semester-bar, .search-card, .btn-print, .profile-card, .summary-grid, .note { 
+      display: none !important; 
+    }
+    body { background: white; padding: 0; margin: 0; }
+    #result { display: block !important; }
+    #print-area { display: block; }
+
+    .kop-surat { display: flex; align-items: center; justify-content: center; gap: 20px; text-align: center; margin-top: 10px; }
+    .logo-khs { width: 85px; height: auto; }
+    .teks-kop h3 { font-size: 16px; margin: 0; font-weight: normal; }
+    .teks-kop h2 { font-size: 19px; margin: 5px 0; font-weight: bold; }
+    .teks-kop p { font-size: 11px; margin: 0; line-height: 1.4; }
+    .garis-kop { border: none; border-top: 3px solid black; border-bottom: 1px solid black; height: 2px; margin: 15px 0; }
+
+    .judul-khs { text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 20px; }
+    .tabel-bio { width: 100%; font-size: 12px; margin-bottom: 15px; }
+    .tabel-bio td { padding: 3px 0; }
+
+    .table-wrap { border: none; overflow: visible !important; padding: 1px; }
+    table { border-collapse: collapse; width: 100%; border: 1px solid black !important; }
+    thead th { background: white !important; color: black !important; border: 1px solid black !important; font-weight: bold; }
+    tbody td { border: 1px solid black !important; color: black !important; padding: 6px; }
+    .badge-nilai { background: none !important; color: black !important; padding: 0; font-weight: normal; }
+
+    .print-footer { display: flex; justify-content: space-between; margin-top: 25px; font-size: 12px; }
+    .ipk-box { border: 1px solid black; padding: 10px; width: 240px; }
+    .ipk-box table { border: none; }
+    .ipk-box td { border: none; padding: 2px; }
+
+    .note-nilai-proses {
+      background: transparent;
+      border: none;
+      color: black;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      padding: 0;
+      font-style: italic;
+    }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid var(--green-pale); border-top-color: var(--green);
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div style="position: absolute; left: -9999px; top: -9999px;">
+  <img src="logo.png" alt="Preload">
+</div>
+
+<header>
+  <div class="header-inner">
+    <img src="logo.png" alt="Logo STKIP" class="logo-web">
+    <div class="header-text">
+      <h1>Portal Nilai Mahasiswa</h1>
+      <p>STKIP Ahlussunnah Bukittinggi &nbsp;·&nbsp; Sistem Informasi Akademik</p>
+    </div>
+  </div>
+</header>
+<div class="semester-bar">Periode Semester Ganjil 2025/2026</div>
+
+<main>
+  <div class="search-card">
+    <h2>Cek Nilai Akademik</h2>
+    <p>Masukkan NIM dan Tanggal Lahir Anda</p>
+    
+    <div id="offline-banner" style="display: none; background: #fee2e2; color: #991b1b; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #f87171; text-align: center; font-weight: 500;">
+      Layanan Portal Nilai buka senin-juma'at atau jam kerja<br>Server kampus akan beroperasi mulai pukul <strong>09.00-15.30 WIB</strong>.
+    </div>
+
+    <div class="input-group" id="form-inputan">
+      <div class="input-item">
+        <label>NIM Mahasiswa</label>
+        <input type="text" id="nim-input" maxlength="20">
+      </div>
+      
+      <div class="input-item">
+        <label>Tanggal Lahir</label>
+        <input type="date" id="tgl-input" required>
+      </div>
+      
+      <div class="input-item btn-wrap">
+        <button class="btn-cari" onclick="cariNilai()">Cari Nilai</button>
+      </div>
+    </div>
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+  <div id="result">
+    <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+
+    <div id="print-area">
+      <div class="kop-surat">
+        <img src="logo.png" alt="Logo STKIP" class="logo-khs">
+        <div class="teks-kop">
+          <h3>SEKOLAH TINGGI KEGURUAN DAN ILMU PENDIDIKAN (STKIP)</h3>
+          <h2>AHLUSSUNNAH BUKITTINGGI</h2>
+          <p>Kampus: Jl. Diponegoro No. 8 Depan Terminal Aur Kuning, Bukittinggi 26131, SUMBAR<br>
+          Telp: (0752) 31312, FAX: (0752) 35136, E-Mail: info@stkipahlussunnah.ac.id<br>
+          Website: www.stkip-ahlussunnah.ac.id</p>
+        </div>
+      </div>
+      <hr class="garis-kop">
+      <div class="judul-khs">KARTU HASIL STUDI (KHS)<br>Semester Ganjil 2025/2026</div>
+      
+      <table class="tabel-bio">
+        <tr><td width="130">NAMA</td><td width="10">:</td><td><strong id="p-nama"></strong></td></tr>
+        <tr><td>NIM</td><td>:</td><td><span id="p-nim"></span></td></tr>
+        <tr><td>PROGRAM STUDI</td><td>:</td><td><span id="p-prodi"></span></td></tr>
+      </table>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-avatar" id="avatar">—</div>
+      <div class="profile-info">
+        <h3 id="w-nama">—</h3>
+        <p>NIM: <span id="w-nim">—</span> | <span id="w-prodi">—</span></p>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-item"><div class="val" id="s-sks">0</div><div class="lbl">SKS Diambil</div></div>
+      <div class="summary-item"><div class="val" id="s-ip">0.00</div><div class="lbl">IP Semester</div></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>NO</th>
+            <th>MATA KULIAH</th>
+            <th>SKS</th>
+            <th>N. ANGKA</th>
+            <th>MUTU</th>
+            <th>BOBOT</th>
+          </tr>
+        </thead>
+        <tbody id="tabel-body"></tbody>
+      </table>
+    </div>
+
+    <div class="note-nilai-proses">
+      * <strong>Catatan:</strong> Jika nilai mutu masih berupa tanda strip ( <strong>-</strong> ), menandakan bahwa nilai untuk mata kuliah tersebut masih dalam proses penginputan oleh dosen atau nilai nya bermasalah, silahkan hubungi dosen yang bersangkutan untuk memberitahu operator kampus
+    </div>
+
+    <div id="print-area">
+      <div class="print-footer">
+        <div class="ipk-box">
+          <table>
+            <tr><td width="100">JUMLAH SKS</td><td>:</td><td id="p-sks">0</td></tr>
+            <tr><td>INDEKS SEMESTER</td><td>:</td><td id="p-ip">0,00</td></tr>
+          </table>
+        </div>
+        <div style="text-align:center; width:220px;">
+          <p id="p-tgl">Bukittinggi, ...</p>
+          <p style="margin-bottom:65px;">KETUA PRODI</p>
+          <p><strong>(________________________)</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// PENGATURAN AMAN
+const CONFIG = {
+  apiUrl: 'https://stephany-placid-shudderingly.ngrok-free.dev/portal-nilai/proxy.php', 
+  idSmt: '20251'
+};
+
+// --- SISTEM BUKA-TUTUP OTOMATIS ---
+const jamBuka = 9;     // Buka jam 09:00 Pagi
+const jamTutup = 15.5; // Tutup jam 15:30 (15 ditambah 30/60 menit = 15.5)
+
+function cekJamOperasional() {
+  const waktu = new Date();
+  const jamSekarang = waktu.getHours() + (waktu.getMinutes() / 60);
+  
+  // Jika di luar jam operasional (Sebelum jam 9 pagi ATAU sesudah 15:30)
+  if (jamSekarang < jamBuka || jamSekarang >= jamTutup) {
+    document.getElementById('form-inputan').style.display = 'none'; // Sembunyikan form
+    document.getElementById('offline-banner').style.display = 'block'; // Tampilkan pesan tutup
+  }
+}
+cekJamOperasional(); // Jalankan saat web pertama kali dibuka
+// ----------------------------------
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.className = 'status-msg ' + type;
+  el.innerHTML = msg;
+}
+
+// FUNGSI API YANG SUDAH DIPERBAIKI KEAMANANNYA
+async function apiCall(act, params) {
+  // 1. Minta Token (TIDAK MENGIRIM PASSWORD DARI SINI)
+  const tokenRes = await fetch(CONFIG.apiUrl, {
+    method: 'POST', 
+    body: JSON.stringify({ act: 'GetToken' }) 
+  });
+  const tokenData = await tokenRes.json();
+
+  if (tokenData.error_code) {
+      throw new Error(tokenData.error_desc || "Gagal menghubungi server kampus.");
+  }
+
+  // 2. Lakukan request data dengan token yang didapat
+  const res = await fetch(CONFIG.apiUrl, {
+    method: 'POST', 
+    body: JSON.stringify({ act: act, token: tokenData.data.token, ...params })
+  });
+  return await res.json();
+}
+
+async function cariNilai() {
+  const nim = document.getElementById('nim-input').value.trim();
+  const tglLahir = document.getElementById('tgl-input').value; 
+  
+  if (!nim || !tglLahir) { 
+    showStatus('⚠️ NIM dan Tanggal Lahir wajib diisi!', 'error'); 
+    return; 
+  }
+
+  document.getElementById('result').style.display = 'none';
+  showStatus('<span class="spinner"></span>Memverifikasi data mahasiswa...', 'loading');
+
+  try {
+    // ================================================================
+    // LANGKAH 1: VERIFIKASI TANGGAL LAHIR
+    // ================================================================
+    const verifyRes = await apiCall('GetListMahasiswa', { filter: `nipd='${nim}'`, limit: 1 });
+    
+    if (verifyRes.error_code !== 0 || !verifyRes.data || verifyRes.data.length === 0) { 
+      showStatus('❌ NIM tidak terdaftar di database kampus.', 'error'); 
+      return; 
+    }
+
+    const dataMhsAsli = verifyRes.data[0];
+    let rawTgl = dataMhsAsli.tanggal_lahir || '';
+    let tglFeeder = '';
+
+    // "Penerjemah" Format Tanggal Feeder
+    if (rawTgl.includes('T')) {
+        let d = new Date(rawTgl);
+        tglFeeder = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    } else if (rawTgl.indexOf('-') === 2) {
+        let parts = rawTgl.split('-');
+        tglFeeder = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    } else if (rawTgl.indexOf('/') === 2) {
+        let parts = rawTgl.split('/');
+        tglFeeder = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    } else {
+        tglFeeder = rawTgl.substring(0, 10);
+    }
+
+    // Cek kecocokan tanggal lahir
+    if (tglFeeder !== tglLahir) {
+      showStatus('🔒 Akses Ditolak! Tanggal lahir yang dimasukkan salah.', 'error'); 
+      return;
+    }
+
+    // ================================================================
+    // LANGKAH 2: TARIK DATA KHS
+    // ================================================================
+    showStatus('<span class="spinner"></span>Menarik data KHS...', 'loading');
+
+    const mhs = await apiCall('GetAktivitasKuliahMahasiswa', { filter: `nim='${nim}' AND id_semester='${CONFIG.idSmt}'`, limit: 1 });
+    if (!mhs.data || mhs.data.length === 0) { 
+      showStatus('⚠️ Mahasiswa tidak aktif pada semester ini.', 'error'); 
+      return; 
+    }
+    
+    const d = mhs.data[0];
+    document.getElementById('w-nama').innerText = document.getElementById('p-nama').innerText = d.nama_mahasiswa;
+    document.getElementById('w-nim').innerText = document.getElementById('p-nim').innerText = d.nim;
+    document.getElementById('w-prodi').innerText = document.getElementById('p-prodi').innerText = d.nama_program_studi;
+    document.getElementById('avatar').innerText = d.nama_mahasiswa[0];
+
+    const nilai = await apiCall('GetRiwayatNilaiMahasiswa', { filter: `nim='${nim}' AND id_periode='${CONFIG.idSmt}'` });
+    
+    let html = '', totalSks = 0, totalMutu = 0;
+    (nilai.data || []).forEach((n, i) => {
+      const sks = parseInt(n.sks_mata_kuliah);
+      const nIndeks = parseFloat(n.nilai_indeks || 0);
+      const nHuruf = (n.nilai_huruf || '').trim();
+      
+      let mutu = 0;
+      if(nHuruf && nHuruf !== 'T' && nHuruf !== 'K') {
+        totalSks += sks;
+        mutu = sks * nIndeks;
+        totalMutu += mutu;
+      }
+
+      html += `<tr>
+        <td class="center">${i+1}</td>
+        <td>${n.nama_mata_kuliah}</td>
+        <td class="center">${sks}</td>
+        <td class="center">${nIndeks.toFixed(2)}</td>
+        <td class="center"><span class="badge-nilai badge-${nHuruf[0] || 'default'}">${nHuruf || '—'}</span></td>
+        <td class="center">${mutu.toFixed(2)}</td>
+      </tr>`;
+    });
+
+    const ip = totalSks > 0 ? (totalMutu / totalSks).toFixed(2) : "0.00";
+    document.getElementById('tabel-body').innerHTML = html;
+    document.getElementById('s-sks').innerText = document.getElementById('p-sks').innerText = totalSks;
+    document.getElementById('s-ip').innerText = document.getElementById('p-ip').innerText = ip;
+    
+    const tgl = new Date();
+    const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    document.getElementById('p-tgl').innerText = `Bukittinggi, ${tgl.getDate()} ${namaBulan[tgl.getMonth()]} ${tgl.getFullYear()}`;
+    
+    document.getElementById('status-msg').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+  } catch (e) { 
+    showStatus('Terjadi kesalahan: ' + e.message, 'error'); 
+    console.error(e);
+  }
+}
+</script>
+</body>
+</html>
